@@ -1,50 +1,54 @@
 import processing.sound.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-String SOUNDDIR = "/data";
-String IMGDIR = "/primitives";
+String MIDDLESOUNDDIR = "middle_tracks/";
+String OUTROSOUNDDIR = "outro_tracks/";
 
 public class SongStitcher {
-  MySoundFile[] sounds;
+  MySoundFile[] middle_sounds;
+  MySoundFile[] outro_sounds;
   Integer[] song;
   int numTracks;
   int curTrack = -1;
 
   public SongStitcher(int duration){
-    sounds = _loadClips();
+    middle_sounds = _loadClips(MIDDLESOUNDDIR);
+    outro_sounds = _loadClips(OUTROSOUNDDIR);
     song = _generateIdxs(duration);
     numTracks = song.length;
   }
   
   public String step(){
-    if(curTrack < 0 || (curTrack < numTracks && !sounds[song[curTrack]].sound.isPlaying())){
-      // Attempt to proceed to the next track.
-      curTrack++;
-      
-      if(curTrack >= numTracks){
-        // Song is over
-        return "END OF SONG";
-      }
-      else{
-        sounds[song[curTrack]].sound.play();
-      }
-    }
-    
-    if(curTrack >= numTracks){
-      // Song is over
+    if(curTrack == numTracks-1 && !outro_sounds[song[curTrack]].sound.isPlaying()){
+      // The outro has ended. The song is over.
       return "END OF SONG";
     }
-    else{
-      return sounds[song[curTrack]].fileName, sounds[song[curTrack]].imgName;
+    
+    if(curTrack == numTracks-2 && !middle_sounds[song[curTrack]].sound.isPlaying()){
+      // Time to play the outro!
+      curTrack++;
+      outro_sounds[song[curTrack]].sound.play();
+    }else if(curTrack < 0 || (curTrack < numTracks-2 && !middle_sounds[song[curTrack]].sound.isPlaying())){
+      // Start of song, or old track has finished and not time for outro
+      // Proceed to the next track.
+      curTrack++;
+      middle_sounds[song[curTrack]].sound.play();
+    }
+    
+    if(curTrack == numTracks-1){
+      // Outro is playing
+      return outro_sounds[song[curTrack]].fileName;
+    }else{
+      // Middle sound is playing
+      return middle_sounds[song[curTrack]].fileName;
     }
   }
   
-  private MySoundFile[] _loadClips(){
-    String[] files = _listFileNames(sketchPath() + SOUNDDIR);
-    String[] imgs = _listFileNames(sketchPath() + IMGDIR);
+  private MySoundFile[] _loadClips(String filedir){
+    String[] files = _listFileNames(sketchPath() + "/data/" + filedir);
     MySoundFile[] loaded = new MySoundFile[files.length];
     for(int i = 0; i < files.length; i++){
-      loaded[i] = new MySoundFile(new SoundFile(groupProj.this, files[i]), imgs[i]);
+      loaded[i] = new MySoundFile(new SoundFile(groupProj.this, filedir + files[i]), filedir + files[i]);
     }
     return loaded;
   }
@@ -52,11 +56,19 @@ public class SongStitcher {
   private Integer[] _generateIdxs(int duration){
     float totalDuration = 0;
     ArrayList<Integer> idxs = new ArrayList<Integer>();
+
+    int outroIdx = ThreadLocalRandom.current().nextInt(0, outro_sounds.length);
+    totalDuration += outro_sounds[outroIdx].sound.duration();
+    // Then add the outro Idx after all the middle idxs.
+    
     while(totalDuration < duration){
-      int soundIdx = ThreadLocalRandom.current().nextInt(0, sounds.length);
+      int soundIdx = ThreadLocalRandom.current().nextInt(0, middle_sounds.length);
       idxs.add(soundIdx);
-      totalDuration += sounds[soundIdx].sound.duration();
+      totalDuration += middle_sounds[soundIdx].sound.duration();
     }
+    
+    idxs.add(outroIdx);
+    
     Integer[] out = new Integer[idxs.size()];
     return idxs.toArray(out);
   }
@@ -77,13 +89,13 @@ public class SongStitcher {
 
 public class MySoundFile{
   SoundFile sound;
-  String imageMaybe;
+  OtherData imageMaybe;
   String fileName;
   
   public MySoundFile(SoundFile sFile, String _fileName){
     sound = sFile;
     fileName = _fileName;
-    imageMaybe = _fileName;
+    imageMaybe = new OtherData();
   }
 };
 
