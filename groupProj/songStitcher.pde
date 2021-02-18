@@ -2,6 +2,7 @@ import processing.sound.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 String SOUNDDIR = "/data";
+String IMGDIR = "/primitives";
 
 public class SongStitcher {
   MySoundFile[] sounds;
@@ -34,15 +35,16 @@ public class SongStitcher {
       return "END OF SONG";
     }
     else{
-      return sounds[song[curTrack]].fileName;
+      return sounds[song[curTrack]].fileName, sounds[song[curTrack]].imgName;
     }
   }
   
   private MySoundFile[] _loadClips(){
     String[] files = _listFileNames(sketchPath() + SOUNDDIR);
+    String[] imgs = _listFileNames(sketchPath() + IMGDIR);
     MySoundFile[] loaded = new MySoundFile[files.length];
     for(int i = 0; i < files.length; i++){
-      loaded[i] = new MySoundFile(new SoundFile(groupProj.this, files[i]), files[i]);
+      loaded[i] = new MySoundFile(new SoundFile(groupProj.this, files[i]), imgs[i]);
     }
     return loaded;
   }
@@ -75,13 +77,13 @@ public class SongStitcher {
 
 public class MySoundFile{
   SoundFile sound;
-  OtherData imageMaybe;
+  String imageMaybe;
   String fileName;
   
   public MySoundFile(SoundFile sFile, String _fileName){
     sound = sFile;
     fileName = _fileName;
-    imageMaybe = new OtherData();
+    imageMaybe = _fileName;
   }
 };
 
