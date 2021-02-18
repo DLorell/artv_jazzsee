@@ -9,15 +9,14 @@ public class Grid {
   int focusRow;
   int focusCol;
   Random generator;
+  Pos[][] drawSequence;
   
   public Grid(int h, int w, int seed){
-    generator = new Random(seed);
-    _gridConstructor(h, w, 128);
+    _gridConstructor(h, w, 128, seed);
   }
   
   public Grid(int h, int w, int strokeNum, int seed){
-    generator = new Random(seed);
-    _gridConstructor(h, w, strokeNum);
+    _gridConstructor(h, w, strokeNum, seed);
   }
   
   public void start(){
@@ -27,23 +26,20 @@ public class Grid {
   }
   
   public void step(PImage img){
-    /*
+    
     if(focusCol == cols){
       focusCol = 0;
       focusRow++;
     }
     if(focusRow == rows){focusRow = 0;}
     
-    tiles[focusRow][focusCol].draw();
+    //tiles[focusRow][focusCol].draw();
+    
+    int x = drawSequence[focusRow][focusCol].x;
+    int y = drawSequence[focusRow][focusCol].y;
+    image(img, x, y);
 
     focusCol++;
-    */
-    int focusRow = generator.nextInt(tiles.length);
-    int focusCol = generator.nextInt(tiles[0].length);
-    
-    int x = tiles[focusRow][focusCol].upperLeft.x;
-    int y = tiles[focusRow][focusCol].upperLeft.y;
-    image(img, x, y);
   }
   
   public void drawGrid(int h, int w, int strokeNum){
@@ -61,11 +57,34 @@ public class Grid {
     }
   }
   
-  private void _gridConstructor(int h, int w, int strokeNum){
+  private void _gridConstructor(int h, int w, int strokeNum, int seed){
+    generator = new Random(seed);
     rows = h;
     cols = w;
     drawGrid(h, w, strokeNum);
     _initTiles(h, w);
+    drawSequence = _getDrawSequence();
+  }
+  
+  private Pos[][] _getDrawSequence(){
+    Pos[][] seq = new Pos[rows][cols];
+    ArrayList<Pos> positions = new ArrayList<Pos>();
+    int row_hgt = (int)Math.floor(height/rows);
+    int col_wth = (int)Math.floor(height/cols);
+    
+    for(int i=0;i<rows;i++){
+      for(int j=0;j<cols;j++){
+        positions.add(new Pos(i*row_hgt, j*col_wth));
+      } 
+    }
+    
+    for(int i=0;i<rows;i++){
+      for(int j=0;j<cols;j++){
+        seq[i][j] = positions.get(generator.nextInt(positions.size()));
+      } 
+    }
+    
+    return seq;
   }
   
   private void _initTiles(int rows, int cols){
