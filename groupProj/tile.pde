@@ -24,7 +24,10 @@ public class Tile {
   }
   
   public void draw(){
-    _draw(255);
+    _draw(200);
+    img = loadImage("1.png");
+    img.resize(0, 73);
+    image(img, 0, 0);
   }
   
   public void draw(int fill){

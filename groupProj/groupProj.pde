@@ -26,7 +26,6 @@ void draw() {
   int secondsElapsed = Math.round((millis() - startTime) / 1000);
   
   String curTrack = songStitcher.step();
-  println(curTrack);
   
   if(secondsElapsed != lastSecond){
     lastSecond = secondsElapsed;
