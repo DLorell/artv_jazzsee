@@ -8,13 +8,15 @@ public class Grid {
   Tile[][] tiles;
   int focusRow;
   int focusCol;
+  Random generator;
+  Pos[][] drawSequence;
   
-  public Grid(int h, int w){
-    _gridConstructor(h, w, 128);
+  public Grid(int h, int w, int seed){
+    _gridConstructor(h, w, 128, seed);
   }
   
-  public Grid(int h, int w, int strokeNum){
-    _gridConstructor(h, w, strokeNum);
+  public Grid(int h, int w, int strokeNum, int seed){
+    _gridConstructor(h, w, strokeNum, seed);
   }
   
   public void start(){
@@ -23,15 +25,19 @@ public class Grid {
     focusCol = 0;
   }
   
-  public void step(){
-
+  public void step(PImage img){
+    
     if(focusCol == cols){
       focusCol = 0;
       focusRow++;
     }
     if(focusRow == rows){focusRow = 0;}
     
-    tiles[focusRow][focusCol].draw();
+    //tiles[focusRow][focusCol].draw();
+    
+    int x = drawSequence[focusRow][focusCol].x;
+    int y = drawSequence[focusRow][focusCol].y;
+    image(img, x, y);
 
     focusCol++;
   }
@@ -51,11 +57,36 @@ public class Grid {
     }
   }
   
-  private void _gridConstructor(int h, int w, int strokeNum){
+  private void _gridConstructor(int h, int w, int strokeNum, int seed){
+    generator = new Random(seed);
     rows = h;
     cols = w;
-    drawGrid(h, w, strokeNum);
+    //drawGrid(h, w, strokeNum);
     _initTiles(h, w);
+    drawSequence = _getDrawSequence();
+  }
+  
+  private Pos[][] _getDrawSequence(){
+    Pos[][] seq = new Pos[rows][cols];
+    ArrayList<Pos> positions = new ArrayList<Pos>();
+    int row_hgt = (int)Math.floor(height/rows);
+    int col_wth = (int)Math.floor(height/cols);
+    
+    for(int i=0;i<rows;i++){
+      for(int j=0;j<cols;j++){
+        positions.add(new Pos(i*row_hgt, j*col_wth));
+      } 
+    }
+    
+    for(int i=0;i<rows;i++){
+      for(int j=0;j<cols;j++){
+        int pos_int = generator.nextInt(positions.size());
+        seq[i][j] = positions.get(pos_int);
+        positions.remove(pos_int);
+      } 
+    }
+    
+    return seq;
   }
   
   private void _initTiles(int rows, int cols){
