@@ -89,19 +89,12 @@ public class SongStitcher {
 
 public class MySoundFile{
   SoundFile sound;
-  OtherData imageMaybe;
+  PImage img;
   String fileName;
   
-  public MySoundFile(SoundFile sFile, String _fileName){
+  public MySoundFile(SoundFile sFile, String _fileName, String img_name){
     sound = sFile;
     fileName = _fileName;
-    imageMaybe = new OtherData();
+    img = loadImage("primitives/" + img_name);
   }
 };
-
-
-// This is a useless class meant to illustrate the purpose of the MySoundFile class.
-public class OtherData{
-  public OtherData(){
-  }
-}

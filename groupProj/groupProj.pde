@@ -1,7 +1,7 @@
 // from grid import Grid
 // from songStitcher import SongStitcher
 
-int SONGDURATION = 60;
+int SONGDURATION = 30;
 
 float startTime = 0;
 int lastSecond = -1;
