@@ -31,7 +31,10 @@ public class Grid {
     }
     if(focusRow == rows){focusRow = 0;}
     
-    tiles[focusRow][focusCol].draw();
+    //tiles[focusRow][focusCol].draw();
+    int x = tiles[focusRow][focusCol].upperLeft.x;
+    int y = tiles[focusRow][focusCol].upperLeft.y;
+    image(img, x, y);
 
     focusCol++;
   }
