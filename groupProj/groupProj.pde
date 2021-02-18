@@ -11,7 +11,7 @@ int COLS = 20;
 // 1 -> The whole board (with maybe some overlap at the end)
 // 0.5 -> Less than the whole board
 // 2 -> Later primitives will begin drawing over earlier ones.
-float fillAmount = 0.75;
+float fillAmount = 1;;
 
 
 // Not meant to be modified ------
