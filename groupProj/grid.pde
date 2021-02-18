@@ -61,7 +61,7 @@ public class Grid {
     generator = new Random(seed);
     rows = h;
     cols = w;
-    drawGrid(h, w, strokeNum);
+    //drawGrid(h, w, strokeNum);
     _initTiles(h, w);
     drawSequence = _getDrawSequence();
   }
@@ -80,7 +80,9 @@ public class Grid {
     
     for(int i=0;i<rows;i++){
       for(int j=0;j<cols;j++){
-        seq[i][j] = positions.get(generator.nextInt(positions.size()));
+        int pos_int = generator.nextInt(positions.size());
+        seq[i][j] = positions.get(pos_int);
+        positions.remove(pos_int);
       } 
     }
     
