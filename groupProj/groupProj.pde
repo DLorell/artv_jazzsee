@@ -1,7 +1,7 @@
 // from grid import Grid
 // from songStitcher import SongStitcher
 
-int SONGDURATION = 60;
+int SONGDURATION = 30;
 
 float startTime = 0;
 int lastSecond = -1;
@@ -26,7 +26,6 @@ void draw() {
   int secondsElapsed = Math.round((millis() - startTime) / 1000);
   
   String curTrack = songStitcher.step();
-  println(curTrack);
   
   if(secondsElapsed != lastSecond){
     lastSecond = secondsElapsed;
