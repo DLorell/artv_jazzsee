@@ -23,7 +23,7 @@ public class Grid {
     focusCol = 0;
   }
   
-  public void step(){
+  public void step(PImage img){
 
     if(focusCol == cols){
       focusCol = 0;

@@ -25,10 +25,10 @@ public class SongStitcher {
     numTracks = song.length;
   }
   
-  public String step(){
+  public MySoundFile step(){
     if(curTrack == numTracks-1 && !outro_sounds[song[curTrack]].sound.isPlaying()){
       // The outro has ended. The song is over.
-      return "END OF SONG";
+      return null;
     }
     
     if(curTrack == numTracks-2 && !middle_sounds[song[curTrack]].sound.isPlaying()){
@@ -44,10 +44,10 @@ public class SongStitcher {
     
     if(curTrack == numTracks-1){
       // Outro is playing
-      return outro_sounds[song[curTrack]].fileName;
+      return outro_sounds[song[curTrack]];
     }else{
       // Middle sound is playing
-      return middle_sounds[song[curTrack]].fileName;
+      return middle_sounds[song[curTrack]];
     }
   }
   

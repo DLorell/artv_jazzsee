@@ -30,18 +30,22 @@ void draw() {
   if(startTime == 0){startTime = millis();}
   int secondsElapsed = Math.round((millis() - startTime) / 1000);
   
-  String curTrack = songStitcher.step();
+  MySoundFile sound_f = songStitcher.step();
   
   if(secondsElapsed != lastSecond){
     lastSecond = secondsElapsed;
     //println(secondsElapsed);
     // Put code which should run once every second here.
     
-    background(128);
-    grid.step();
-    grid.drawGrid(10, 10, 0);
-    //img = loadImage(curImg);
-    //image(img, 0, 0);
-    println("Now playing track: " + curTrack);
+    if(sound_f == null){
+      println("Song over.");
+    }else{
+      background(128);
+      grid.step(sound_f.img);
+      grid.drawGrid(ROWS, COLS, 0);
+      println("Now playing track: " + sound_f.fileName);
+    }
+    
+    
   }
 }
