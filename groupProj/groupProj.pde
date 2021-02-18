@@ -10,14 +10,19 @@ String imgName;
 Grid grid;
 SongStitcher songStitcher;
 
+int WINDOW_H = 720;
+int WINDOW_W = 720;
+
+int ROWS = 10;
+int COLS = 10;
+
 void setup() {
   size(720, 720);
   background(128);
   
-  songStitcher = new SongStitcher(SONGDURATION);
-  //String imgName = songStitcher.sounds.imageMaybe;
+  songStitcher = new SongStitcher(SONGDURATION, WINDOW_H/ROWS, WINDOW_W/COLS);
   
-  grid = new Grid(10, 10, 0);
+  grid = new Grid(ROWS, COLS, 0);
   grid.start();
 }
 

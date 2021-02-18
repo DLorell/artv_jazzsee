@@ -1,19 +1,26 @@
 import processing.sound.*;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.Arrays;
 
 String MIDDLESOUNDDIR = "middle_tracks/";
 String OUTROSOUNDDIR = "outro_tracks/";
+String MIDDLEIMGDIR = "middle_primitives/";
+String OUTROIMGDIR = "outro_primitives/";
 
 public class SongStitcher {
   MySoundFile[] middle_sounds;
   MySoundFile[] outro_sounds;
+  PImage[] middle_primitives;
+  PImage[] outro_primitives;
   Integer[] song;
   int numTracks;
   int curTrack = -1;
 
-  public SongStitcher(int duration){
-    middle_sounds = _loadClips(MIDDLESOUNDDIR);
-    outro_sounds = _loadClips(OUTROSOUNDDIR);
+  public SongStitcher(int duration, int row_h, int col_w){
+    middle_primitives = _loadImgs(MIDDLEIMGDIR, row_h, col_w);
+    outro_primitives = _loadImgs(OUTROIMGDIR, row_h, col_w);
+    middle_sounds = _loadClips(MIDDLESOUNDDIR, middle_primitives);
+    outro_sounds = _loadClips(OUTROSOUNDDIR, outro_primitives);
     song = _generateIdxs(duration);
     numTracks = song.length;
   }
@@ -44,11 +51,23 @@ public class SongStitcher {
     }
   }
   
-  private MySoundFile[] _loadClips(String filedir){
+  private PImage[] _loadImgs(String filedir, int h, int w){
+    String[] files = _listFileNames(sketchPath() + "/data/" + filedir);
+    PImage[] loaded = new PImage[files.length];
+    for(int i = 0; i < files.length; i++){
+      loaded[i] = loadImage(filedir + files[i]);
+      loaded[i].resize(h, w);
+    }
+    return loaded;
+  }
+  
+  private MySoundFile[] _loadClips(String filedir, PImage[] imgs){
     String[] files = _listFileNames(sketchPath() + "/data/" + filedir);
     MySoundFile[] loaded = new MySoundFile[files.length];
     for(int i = 0; i < files.length; i++){
-      loaded[i] = new MySoundFile(new SoundFile(groupProj.this, filedir + files[i]), filedir + files[i]);
+      SoundFile sound = new SoundFile(groupProj.this, filedir + files[i]);
+      String sound_file_path = filedir + files[i];
+      loaded[i] = new MySoundFile(sound, sound_file_path, imgs[i%imgs.length]);
     }
     return loaded;
   }
@@ -77,6 +96,7 @@ public class SongStitcher {
     File file = new File(dir);
     if (file.isDirectory()) {
       String names[] = file.list();
+      Arrays.sort(names);
       return names;
     } else {
       // If it's not a directory
@@ -92,9 +112,9 @@ public class MySoundFile{
   PImage img;
   String fileName;
   
-  public MySoundFile(SoundFile sFile, String _fileName, String img_name){
+  public MySoundFile(SoundFile sFile, String _fileName, PImage _img){
     sound = sFile;
     fileName = _fileName;
-    img = loadImage("primitives/" + img_name);
+    img = _img;
   }
 };
