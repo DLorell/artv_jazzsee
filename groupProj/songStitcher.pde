@@ -1,5 +1,5 @@
 import processing.sound.*;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Random;
 import java.util.Arrays;
 
 String MIDDLESOUNDDIR = "middle_tracks/";
@@ -8,6 +8,9 @@ String MIDDLEIMGDIR = "middle_primitives/";
 String OUTROIMGDIR = "outro_primitives/";
 
 public class SongStitcher {
+  
+  int RANDOMSEED;
+  
   MySoundFile[] middle_sounds;
   MySoundFile[] outro_sounds;
   PImage[] middle_primitives;
@@ -16,7 +19,8 @@ public class SongStitcher {
   int numTracks;
   int curTrack = -1;
 
-  public SongStitcher(int duration, int row_h, int col_w){
+  public SongStitcher(int duration, int row_h, int col_w, int seed){
+    RANDOMSEED = seed;
     middle_primitives = _loadImgs(MIDDLEIMGDIR, row_h, col_w);
     outro_primitives = _loadImgs(OUTROIMGDIR, row_h, col_w);
     middle_sounds = _loadClips(MIDDLESOUNDDIR, middle_primitives);
@@ -75,13 +79,14 @@ public class SongStitcher {
   private Integer[] _generateIdxs(int duration){
     float totalDuration = 0;
     ArrayList<Integer> idxs = new ArrayList<Integer>();
+    Random generator = new Random(RANDOMSEED);
 
-    int outroIdx = ThreadLocalRandom.current().nextInt(0, outro_sounds.length);
+    int outroIdx = generator.nextInt(outro_sounds.length);
     totalDuration += outro_sounds[outroIdx].sound.duration();
     // Then add the outro Idx after all the middle idxs.
     
     while(totalDuration < duration){
-      int soundIdx = ThreadLocalRandom.current().nextInt(0, middle_sounds.length);
+      int soundIdx = generator.nextInt(middle_sounds.length);
       idxs.add(soundIdx);
       totalDuration += middle_sounds[soundIdx].sound.duration();
     }

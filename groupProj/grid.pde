@@ -8,12 +8,15 @@ public class Grid {
   Tile[][] tiles;
   int focusRow;
   int focusCol;
+  Random generator;
   
-  public Grid(int h, int w){
+  public Grid(int h, int w, int seed){
+    generator = new Random(seed);
     _gridConstructor(h, w, 128);
   }
   
-  public Grid(int h, int w, int strokeNum){
+  public Grid(int h, int w, int strokeNum, int seed){
+    generator = new Random(seed);
     _gridConstructor(h, w, strokeNum);
   }
   
@@ -24,19 +27,23 @@ public class Grid {
   }
   
   public void step(PImage img){
-
+    /*
     if(focusCol == cols){
       focusCol = 0;
       focusRow++;
     }
     if(focusRow == rows){focusRow = 0;}
     
-    //tiles[focusRow][focusCol].draw();
+    tiles[focusRow][focusCol].draw();
+
+    focusCol++;
+    */
+    int focusRow = generator.nextInt(tiles.length);
+    int focusCol = generator.nextInt(tiles[0].length);
+    
     int x = tiles[focusRow][focusCol].upperLeft.x;
     int y = tiles[focusRow][focusCol].upperLeft.y;
     image(img, x, y);
-
-    focusCol++;
   }
   
   public void drawGrid(int h, int w, int strokeNum){

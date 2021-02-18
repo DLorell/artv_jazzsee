@@ -2,6 +2,8 @@
 // from songStitcher import SongStitcher
 
 int SONGDURATION = 30;
+int RANDOMSEED = 1;
+
 
 float startTime = 0;
 int lastSecond = -1;
@@ -20,9 +22,9 @@ void setup() {
   size(720, 720);
   background(128);
   
-  songStitcher = new SongStitcher(SONGDURATION, WINDOW_H/ROWS, WINDOW_W/COLS);
+  songStitcher = new SongStitcher(SONGDURATION, WINDOW_H/ROWS, WINDOW_W/COLS, RANDOMSEED);
   
-  grid = new Grid(ROWS, COLS, 0);
+  grid = new Grid(ROWS, COLS, 0, RANDOMSEED);
   grid.start();
 }
 
