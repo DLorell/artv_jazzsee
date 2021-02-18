@@ -101,11 +101,27 @@ public class SongStitcher {
     File file = new File(dir);
     if (file.isDirectory()) {
       String names[] = file.list();
-      Arrays.sort(names);
+      shuffleArray(names);
       return names;
     } else {
       // If it's not a directory
       return null;
+    }
+  }
+  
+  private void shuffleArray(String[] array)
+  {
+    int index;
+    Random random = new Random(RANDOMSEED);
+    for (int i = array.length - 1; i > 0; i--)
+    {
+      index = random.nextInt(i + 1);
+      if (index != i)
+      {
+        String tmp = array[index];
+        array[index] = array[i];
+        array[i] = tmp;
+      }
     }
   }
 };
