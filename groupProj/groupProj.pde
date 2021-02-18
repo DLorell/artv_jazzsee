@@ -25,7 +25,7 @@ void draw() {
   if(startTime == 0){startTime = millis();}
   int secondsElapsed = Math.round((millis() - startTime) / 1000);
   
-  String curTrack, curImg = songStitcher.step();
+  String curTrack = songStitcher.step();
   println(curTrack);
   
   if(secondsElapsed != lastSecond){
@@ -36,8 +36,8 @@ void draw() {
     background(128);
     grid.step();
     grid.drawGrid(10, 10, 0);
-    img = loadImage(curImg);
-    image(img, 0, 0);
+    //img = loadImage(curImg);
+    //image(img, 0, 0);
     println("Now playing track: " + curTrack);
   }
 }
